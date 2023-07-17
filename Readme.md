@@ -1,7 +1,7 @@
 # Личный проект «Readme»
 
 * Студент: [Дамир Масалимов](https://up.htmlacademy.ru/nodejs-2/4/user/441629).
-* Наставник: `Неизвестно`.
+* Наставник: [Константин Ильин](https://up.htmlacademy.ru/nodejs-2/4/user/2374827).
 
 ---
 
