@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { BlogTagService } from './blog-tag.service';
 import { fillObject } from '@project/util/util-core';
 import { TagRdo } from './rdo/tag-rdo';
@@ -27,26 +27,26 @@ export class BlogTagController {
 
   @Get('/:id')
   async show(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
   ) {
-    const existTag = await this.blogTagService.getTag(parseInt(id, 10));
+    const existTag = await this.blogTagService.getTag(id);
     return fillObject(TagRdo, existTag);
   }
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async destroy(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
   ) {
-    this.blogTagService.deleteTag(parseInt(id, 10));
+    this.blogTagService.deleteTag(id);
   }
 
   @Patch('/:id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateTagDto,
   ) {
-    const updatedTag = await this.blogTagService.updateTag(parseInt(id, 10), dto);
+    const updatedTag = await this.blogTagService.updateTag(id, dto);
     return fillObject(TagRdo, updatedTag);
   }
 }

@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { BlogPostService } from './blog-post.service';
 import { fillObject } from '@project/util/util-core';
 import { PostRdo } from './rdo/post.rdo';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostQuery } from './query/post.query';
 
 @Controller('posts')
 export class BlogPostController {
@@ -13,15 +14,15 @@ export class BlogPostController {
 
   @Get('/:id')
   async show(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
   ) {
-    const post = await this.blogPostService.getPost(parseInt(id, 10));
+    const post = await this.blogPostService.getPost(id);
     return fillObject(PostRdo, post);
   }
 
   @Get('/')
-  async index() {
-    const posts = await this.blogPostService.getPosts();
+  async index(@Query() query: PostQuery) {
+    const posts = await this.blogPostService.getPosts(query);
     return fillObject(PostRdo, posts);
   }
 
@@ -36,17 +37,17 @@ export class BlogPostController {
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async destroy(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
   ) {
-    this.blogPostService.deletePost(parseInt(id, 10));
+    this.blogPostService.deletePost(id);
   }
 
   @Patch('/:id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdatePostDto,
   ) {
-    const updatedPost = await this.blogPostService.updatePost(parseInt(id, 10), dto);
+    const updatedPost = await this.blogPostService.updatePost(id, dto);
     return fillObject(PostRdo, updatedPost);
   }
 }
