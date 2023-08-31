@@ -4,7 +4,7 @@ import { Expose, Transform } from 'class-transformer';
 export class UserRdo {
   @ApiProperty({
     description: 'The uniq user ID',
-    example: '123',
+    example: '64c8d7e47a6fe807ba600afb',
   })
   @Expose()
   @Transform(({ obj }) => obj.id.toString())
