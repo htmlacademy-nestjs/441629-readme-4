@@ -9,12 +9,14 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AUTH_USER } from './authentication.constant';
 import { MongoidValidationPipe } from '@project/shared/shared-pipes';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { NotifyService } from '../notify/notify.service';
 
 @ApiTags('authentication')
 @Controller('auth')
 export class AuthenticationController {
   constructor(
     private readonly authService: AuthenticationService,
+    private readonly notifyService: NotifyService,
   ) { }
 
   @ApiResponse({
@@ -30,6 +32,8 @@ export class AuthenticationController {
     @Body() dto: CreateUserDto
   ) {
     const newUser = await this.authService.register(dto);
+    const { email, firstname, lastname } = newUser;
+    await this.notifyService.registerSubscriber({ email, firstname, lastname });
     return fillObject(UserRdo, newUser);
   }
 
