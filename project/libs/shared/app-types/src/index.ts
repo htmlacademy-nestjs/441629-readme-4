@@ -7,3 +7,5 @@ export * from './lib/tag.interface';
 export * from './lib/post-type.enum';
 export * from './lib/file.interface';
 export * from './lib/token-payload.interface';
+export * from './lib/subscriber.interface';
+export * from './lib/rabbit-routing.enum';
