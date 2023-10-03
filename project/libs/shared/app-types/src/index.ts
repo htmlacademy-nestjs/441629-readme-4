@@ -9,3 +9,7 @@ export * from './lib/file.interface';
 export * from './lib/token-payload.interface';
 export * from './lib/subscriber.interface';
 export * from './lib/rabbit-routing.enum';
+export * from './lib/request-with-user.interface';
+export * from './lib/request-with-token-payload.interface';
+export * from './lib/refresh-token-payload.interface';
+export * from './lib/token.interface';
