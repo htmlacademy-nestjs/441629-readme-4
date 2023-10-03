@@ -1,15 +1,17 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { fillObject } from '@project/util/util-core';
 import { UserRdo } from './rdo/user.rdo';
-import { LoginUserDto } from './dto/login-user.dto';
 import { LoggedUserRdo } from './rdo/logged-user.rdo';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AUTH_USER } from './authentication.constant';
-import { MongoidValidationPipe } from '@project/shared/shared-pipes';
+import { MongoIdValidationPipe } from '@project/shared/shared-pipes';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { NotifyService } from '../notify/notify.service';
+import { RequestWithTokenPayload, RequestWithUser } from '@project/shared/app-types';
+import { LocalAuthGuard } from './guards/local.guard';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 
 @ApiTags('authentication')
 @Controller('auth')
@@ -46,13 +48,13 @@ export class AuthenticationController {
     status: HttpStatus.UNAUTHORIZED,
     description: AUTH_USER.PASSWODR_OR_LOGIN_WRONG,
   })
+  @UseGuards(LocalAuthGuard)
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   public async login(
-    @Body() dto: LoginUserDto
+    @Req() { user }: RequestWithUser
   ) {
-    const verifiedUser = await this.authService.verifyUser(dto);
-    const loggedUser = await this.authService.createUserToken(verifiedUser);
-    return fillObject(LoggedUserRdo, Object.assign(verifiedUser, loggedUser));
+    return this.authService.createUserToken(user);
   }
 
   @ApiResponse({
@@ -64,9 +66,29 @@ export class AuthenticationController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   public async show(
-    @Param('id', MongoidValidationPipe) id: string
+    @Param('id', MongoIdValidationPipe) id: string
   ) {
     const existUser = await this.authService.getUser(id);
+    console.log(id, existUser)
     return fillObject(UserRdo, existUser);
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get a new access/refresh tokens'
+  })
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  public async refreshToken(
+    @Req() { user }: RequestWithUser,
+  ) {
+    return this.authService.createUserToken(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('check')
+  public async chechToken(@Req() { user: payload }: RequestWithTokenPayload) {
+    return payload;
   }
 }

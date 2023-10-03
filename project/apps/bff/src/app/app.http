@@ -1,0 +1,30 @@
+# Login user by email and password
+POST http://localhost:3000/api/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "user@test.dev",
+  "password": "123456"
+}
+
+###
+
+# Get new JWT pair
+POST http://localhost:3000/api/users/refresh HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTAxYjdhNjZkMjBhNzE5OTY4ZTEyZTUiLCJlbWFpbCI6InVzZXJAdGVzdC5kZXYiLCJyb2xlIjoidXNlciIsImxhc3RuYW1lIjoiSXZhbm92IiwiZmlyc3RuYW1lIjoiSXZhbiIsInRva2VuSWQiOiI4MGZmN2ViNC0zYjI2LTQxNmItYjg5Ni0yMWQyZTA3ODI5ZDEiLCJpYXQiOjE2OTYyNDIyODAsImV4cCI6MTY5NzEwNjI4MH0.ZBJsD8_ZohhSc_9VsI-nXTYcE37Lnqma7I89CudQCyw
+
+###
+
+# Create a new post
+POST http://localhost:3000/api/blog HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTAxYjdhNjZkMjBhNzE5OTY4ZTEyZTUiLCJlbWFpbCI6InVzZXJAdGVzdC5kZXYiLCJyb2xlIjoidXNlciIsImxhc3RuYW1lIjoiSXZhbm92IiwiZmlyc3RuYW1lIjoiSXZhbiIsImlhdCI6MTY5NjI0MjI4MCwiZXhwIjoxNjk2MjQ1ODgwfQ.jSaCoplH2CkLiPZsKSUfmGoHQQNA2584ZLnUNzSLgZo
+Content-Type: application/json
+
+{
+  "postType": "text",
+  "title": "Пробная публикация HTTP",
+  "preview": "Здесь должно быть достаточно текста",
+  "text": "А тут должно быть очень очень много текста, так как по правилам это поле должно содержать более 100 знаков соглансо техническому заданию на проект.",
+  "userId": "12",
+  "tags": [2]
+}
